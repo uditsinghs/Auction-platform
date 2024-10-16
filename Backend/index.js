@@ -5,6 +5,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import { connectDB } from "./utils/db.js";
+import { errorMiddleware } from "./middlewares/error.js";
+import userRouter from './routes/user.route.js'
 
 const app = express();
 dotenv.config();
@@ -19,6 +21,10 @@ app.use(
     tempFileDir: "/tmp/",
   })
 );
+
+// user Created middleware
+app.use(errorMiddleware);
+app.use('/api/v1/user',userRouter)
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUD_NAME,
