@@ -2,7 +2,6 @@ import ErrorHandler from "../middlewares/error.js";
 import { User } from "../models/user.model.js";
 import { v2 as cloudinary } from "cloudinary";
 import { generateToken } from "../utils/generateToken.js";
-
 export const register = async (req, res, next) => {
   try {
     if (!req.files || Object.keys(req.files).length === 0) {
@@ -96,6 +95,76 @@ export const register = async (req, res, next) => {
     });
 
     generateToken(user, "User created successfully", 201, res);
+  } catch (error) {
+    console.log(error);
+    return next(new ErrorHandler("Internal server error", 500));
+  }
+};
+
+export const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return next(new ErrorHandler("Please provide all fields", 400));
+    }
+
+    const user = await User.findOne({ email }).select("+password");
+    if (!user) {
+      return next(new ErrorHandler("Invalid crendentials", 400));
+    }
+
+    const isPassword = await user.comparePassword(password);
+    if (!isPassword) {
+      return next(new ErrorHandler("Invalid crendentials", 400));
+    }
+
+    generateToken(user, "login successfully", 200, res);
+  } catch (error) {
+    console.log(error);
+    return next(new ErrorHandler("Internal server error", 500));
+  }
+};
+
+export const getProfile = async (req, res, next) => {
+  try {
+    const user = req.user;
+    res.status(200).json({
+      message: "get user data successfully",
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+    return next(new ErrorHandler("Internal server error", 500));
+  }
+};
+export const logout = async (req, res, next) => {
+  try {
+    res
+      .status(200)
+      .cookie("token", "", {
+        expires: new Date(Date.now()),
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+      })
+      .json({
+        message: "logout successfully",
+        success: true,
+      });
+  } catch (error) {
+    console.log(error);
+    return next(new ErrorHandler("Internal server error", 500));
+  }
+};
+export const fetchLeaderBoard = async (req, res, next) => {
+  try {
+    const users = await User.find({ moneySpent: { $gt: 0 } });
+    const leaderboard = users.sort((a, b) => b.moneySpent - a.moneySpent);
+    res.status(200).json({
+      success: true,
+      leaderboard,
+    });
   } catch (error) {
     console.log(error);
     return next(new ErrorHandler("Internal server error", 500));

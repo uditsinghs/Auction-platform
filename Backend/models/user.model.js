@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      select: false, // Corrected the typo
+      select: false, 
       minLength: [5, "Password must contain at least 5 characters"],
       maxLength: [20, "Password cannot exceed 20 characters"],
     },
@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema(
     },
     paymentMethods: {
       bankTransfer: {
-        bankAccountNumber: String, // Changed to String
+        bankAccountNumber: String, 
         bankAccountName: String,
         bankName: String,
       },
@@ -51,20 +51,20 @@ const userSchema = new mongoose.Schema(
         paypalEmail: String,
       },
       phonepe: {
-        phonepeNumber: String, // Changed to String
+        phonepeNumber: String, 
       },
     },
     role: {
       type: String,
-      enum: ["Auctioneer", "Bidder", "super Admin"], // Consistency with casing
-      default: "Bidder", // You can set a default role if necessary
+      enum: ["Auctioneer", "Bidder", "super Admin"], 
+      default: "Auctioneer",
     },
     unpaidCommission: {
       type: Number,
       default: 0,
     },
     auctionsWon: {
-      type: Number, // Changed to Number for consistency
+      type: Number,
       default: 0,
     },
     moneySpent: {
