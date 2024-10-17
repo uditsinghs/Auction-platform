@@ -6,7 +6,9 @@ import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
 import { connectDB } from "./utils/db.js";
 import { errorMiddleware } from "./middlewares/error.js";
-import userRouter from './routes/user.route.js'
+import userRouter from "./routes/user.route.js";
+import auctionRouter from "./routes/auction.route.js";
+import bidRouter from './routes/bid.route.js'
 
 const app = express();
 dotenv.config();
@@ -24,7 +26,9 @@ app.use(
 
 // user Created middleware
 app.use(errorMiddleware);
-app.use('/api/v1/user',userRouter)
+app.use("/api/v1/user", userRouter);
+app.use('/api/v1/auction',auctionRouter)
+app.use('/api/v1/bid',bidRouter)
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUD_NAME,
