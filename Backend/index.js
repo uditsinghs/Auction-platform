@@ -8,8 +8,9 @@ import { connectDB } from "./utils/db.js";
 import { errorMiddleware } from "./middlewares/error.js";
 import userRouter from "./routes/user.route.js";
 import auctionRouter from "./routes/auction.route.js";
-import bidRouter from './routes/bid.route.js'
-
+import bidRouter from "./routes/bid.route.js";
+import commisionRoute from "./routes/commision.route.js";
+import superAdminRoute from './routes/superAdmin.route.js'
 const app = express();
 dotenv.config();
 
@@ -27,8 +28,10 @@ app.use(
 // user Created middleware
 app.use(errorMiddleware);
 app.use("/api/v1/user", userRouter);
-app.use('/api/v1/auction',auctionRouter)
-app.use('/api/v1/bid',bidRouter)
+app.use("/api/v1/auction", auctionRouter);
+app.use("/api/v1/bid", bidRouter);
+app.use("/api/v1/commision", commisionRoute);
+app.use("/api/v1/superadmin", superAdminRoute);
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUD_NAME,
